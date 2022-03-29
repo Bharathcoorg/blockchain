@@ -22,7 +22,7 @@ else
 fi
 
 # Install Mix Dependencies
-cd blockscout
+cd cronos-blockscout
 sudo MIX_ENV=prod mix local.hex --force && echo "hex installed"
 sudo MIX_ENV=prod mix deps.update libsecp256k1
 sudo MIX_ENV=prod mix do deps.get, local.rebar --force, deps.compile, compile && echo "mix deps installed"
