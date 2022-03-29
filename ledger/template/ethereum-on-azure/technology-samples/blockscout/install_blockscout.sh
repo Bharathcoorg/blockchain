@@ -21,21 +21,6 @@ else
 	fi
 fi
 
-RPC_ENDPOINT=$1
-WEBSOCKET_ENDPOINT=$2
-DATABASE_PW=$3
-
-# PostgreSQL Configuration
-sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password '$DATABASE_PW';"
-
-# Git Install & Clone
-sudo apt-get install -y git
-sudo git clone https://github.com/poanetwork/blockscout.git && echo "cloned"
-cd blockscout
-sudo git checkout 53ea60c3 && echo "checked out"; cd -
-sudo chmod -R a+x blockscout && echo "permissions granted"
-
-
 # Install Mix Dependencies
 cd blockscout
 sudo MIX_ENV=prod mix local.hex --force && echo "hex installed"
@@ -52,11 +37,11 @@ config :explorer,
     transport: EthereumJSONRPC.HTTP,
     transport_options: [
       http: EthereumJSONRPC.HTTP.HTTPoison,
-      url: \"$RPC_ENDPOINT\",
+      url: \"https://edgeware.api.onfinality.io/public:8540\",
       method_to_url: [
-        eth_call: \"$RPC_ENDPOINT\",
-        eth_getBalance: \"$RPC_ENDPOINT\",
-        trace_replayTransaction: \"$RPC_ENDPOINT\"
+        eth_call: \"https://edgeware.api.onfinality.io/public:8540\",
+        eth_getBalance: \"https://edgeware.api.onfinality.io/public:8540\",
+        trace_replayTransaction: \"https://edgeware.api.onfinality.io/public:8540\"
       ],
       http_options: [recv_timeout: :timer.minutes(1), timeout: :timer.minutes(1), hackney: [pool: :ethereum_jsonrpc]]
     ],
@@ -66,7 +51,7 @@ config :explorer,
     transport: EthereumJSONRPC.WebSocket,
     transport_options: [
       web_socket: EthereumJSONRPC.WebSocket.WebSocketClient,
-      url: \"$WEBSOCKET_ENDPOINT\"
+      url: \"wss://edgeware.api.onfinality.io/public:8547\"
     ],
     variant: EthereumJSONRPC.Parity
  ]" | sudo tee parity.exs
@@ -78,7 +63,7 @@ use Mix.Config
 
 config :explorer, Explorer.Repo,
   username: \"postgres\",
-  password: \"$DATABASE_PW\",
+  password: \"Password123\",
   database: \"explorer_test\",
   hostname: \"localhost\",
   port: \"5432\",
@@ -111,11 +96,11 @@ config :indexer,
     transport: EthereumJSONRPC.HTTP,
     transport_options: [
       http: EthereumJSONRPC.HTTP.HTTPoison,
-      url: \"$RPC_ENDPOINT\",
+      url: \"https://edgeware.api.onfinality.io/public:8540\",
       method_to_url: [
-        eth_getBalance: \"$RPC_ENDPOINT\",
-        trace_block: \"$RPC_ENDPOINT\",
-        trace_replayTransaction: \"$RPC_ENDPOINT\"
+        eth_getBalance: \"https://edgeware.api.onfinality.io/public:8540\",
+        trace_block: \"https://edgeware.api.onfinality.io/public:8540\",
+        trace_replayTransaction: \"https://edgeware.api.onfinality.io/public:8540\"
       ],
       http_options: [recv_timeout: :timer.minutes(1), timeout: :timer.minutes(1), hackney: [pool: :ethereum_jsonrpc]]
     ],
@@ -125,7 +110,7 @@ config :indexer,
     transport: EthereumJSONRPC.WebSocket,
     transport_options: [
       web_socket: EthereumJSONRPC.WebSocket.WebSocketClient,
-      url: \"$WEBSOCKET_ENDPOINT\"
+      url: \"wss://edgeware.api.onfinality.io/public:8547\"
     ]
   ]
 " | sudo tee parity.exs
@@ -161,7 +146,7 @@ cd apps/block_scout_web/assets && sudo npm run-script deploy; cd -
 cd ../../../etc/systemd/system
 echo "
 	[Unit]
-	Description=Blockscout Web App
+	Description=Edgeware Explorer
 
 	[Service]
 	Type=simple
