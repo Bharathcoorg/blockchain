@@ -25,31 +25,6 @@ RPC_ENDPOINT=$1
 WEBSOCKET_ENDPOINT=$2
 DATABASE_PW=$3
 
-# Erlang VM & Elixir Install
-wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && sudo dpkg -i erlang-solutions_2.0_all.deb
-sudo apt-get update
-sudo apt install erlang
-sudo apt-get install elixir
-
-# gcc, make and build-essential Install
-sudo apt-get install make
-sudo apt-get -y install gcc
-sudo apt-get -y install build-essential
-
-# nginx Install
-sudo apt-get -y install nginx && sudo ufw allow 'Nginx HTTP'
-
-# Node.js & NPM Install
-curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-sudo apt-get -y install nodejs
-sudo ln -s /usr/bin/nodejs /usr/bin/node
-
-# PostgreSQL Install
-echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' sudo tee -a /etc/apt/sources.list.d/pgdg.list
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo apt-get update && sudo apt-get -y install postgresql
-sudo apt-get update && sudo apt-get -y install postgresql-client
-
 # PostgreSQL Configuration
 sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password '$DATABASE_PW';"
 
